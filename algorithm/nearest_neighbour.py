@@ -71,14 +71,11 @@ def main():
 	print ('Train set: ' + repr(len(trainingSet)))
 	print ('Test set: ' + repr(len(testSet)))
 	# generate predictions
-	predictions=[]
-	k = 3
+	nn=[]	
 	for x in range(len(testSet)):
-		neighbors = getNeighbors(trainingSet, testSet[x], k)
+		neighbors = getNeighbors(trainingSet, testSet[x], 1)
 		result = getResponse(neighbors)
-		predictions.append(result)
-		print('> predicted=' + repr(result) + ', actual=' + repr(testSet[x][-1]))
-	accuracy = getAccuracy(testSet, predictions)
-	print('Accuracy: ' + repr(accuracy) + '%')
-	
+		nn.append(result)
+   print(nn)     
+
 main()
