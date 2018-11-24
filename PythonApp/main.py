@@ -4,6 +4,8 @@ from pyforms.controls   import ControlText
 from pyforms.controls   import ControlSlider
 from pyforms.controls   import ControlPlayer
 from pyforms.controls   import ControlButton
+from gmplot import gmplot
+from csv_parser import get_latitudes_and_longitudes
 
 class ComputerVisionAlgorithm(BaseWidget):
 
@@ -11,47 +13,41 @@ class ComputerVisionAlgorithm(BaseWidget):
         super().__init__('Computer vision algorithm example')
 
         #Definition of the forms fields
-        self._videofile     = ControlFile('Video')
-        self._outputfile    = ControlText('Results output file')
-        self._threshold     = ControlSlider('Threshold', default=114, minimum=0, maximum=255)
-        self._blobsize      = ControlSlider('Minimum blob size', default=110, minimum=100, maximum=2000)
-        self._player        = ControlPlayer('Player')
-        self._runbutton     = ControlButton('Run')
+        self._import_button = ControlButton("Import POI csv")
+        self._show_map = ControlButton("Show Map")
+        
+        #Set actions
+        self._show_map.value = self.__show_map_action
 
-        #Define the function that will be called when a file is selected
-        self._videofile.changed_event     = self.__videoFileSelectionEvent
-        #Define the event that will be called when the run button is processed
-        self._runbutton.value       = self.__runEvent
-        #Define the event called before showing the image in the player
-        self._player.process_frame_event    = self.__process_frame
+    def __show_map_action(self):
+        # GET POI data
+        poi_data = get_latitudes_and_longitudes('poi.csv')
 
-        #Define the organization of the Form Controls
-        self._formset = [
-            ('_videofile', '_outputfile'),
-            '_threshold',
-            ('_blobsize', '_runbutton'),
-            '_player'
-        ]
+        # sort POI data
+        poi_data.sort(key=lambda key: [key[1], key[0]])
+
+        # Place map
+        gmap = gmplot.GoogleMapPlotter(poi_data[0][0], poi_data[0][1], 10)
+
+        # Scatter POI data
+        top_attraction_lats, top_attraction_lons = zip(*poi_data)
+        gmap.scatter(top_attraction_lats, top_attraction_lons, '#3B0B39', size=40, marker=False)
+        gmap.plot(top_attraction_lats, top_attraction_lons, 'red', edge_width=1)
+
+        # Marker
+        counter = 0
+        for lat_long_data in poi_data:
+            counter = counter + 1
+            lat, lon = lat_long_data
+            gmap.marker(lat, lon, title=str(counter))
+
+        # Draw
+        gmap.draw("my_map.html")
 
 
-    def __videoFileSelectionEvent(self):
-        """
-        When the videofile is selected instanciate the video in the player
-        """
-        self._player.value = self._videofile.value
-
-    def __process_frame(self, frame):
-        """
-        Do some processing to the frame and return the result frame
-        """
-        return frame
-
-    def __runEvent(self):
-        """
-        After setting the best parameters run the full algorithm
-        """
-        pass
-
+class MissonControl(BaseWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__('Computer vision algorithm example')
 
 if __name__ == '__main__':
     from pyforms import start_app
