@@ -1,185 +1,162 @@
-<!DOCTYPE html>
-<html>
+{% extends './base.html' %}
 
-<head>
-	<title>Boeing Hack</title>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.3/dist/leaflet.css" />
-	<script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-</head>
+<!-- Title goes here -->
+{% block title %}
+Map Display
+{% endblock %}
 
-<body>
+<!-- Extra styling goes here -->
+{% block stylesheet %}
+{% endblock %}
 
+<!-- Content goes here -->
+{% block content %}
+	<div id="mapid" style="width:1000px;height:1000px;"></div>
+	<p>{{ testVar }}</p>
+{% endblock %}
+
+<!-- Extra javascript goes here -->
+{% block javascript %}
 <script>
-// Get the current user coordinates
-function getPosition() {
-    // Simple wrapper
-    return new Promise((res, showError) => {
-        navigator.geolocation.getCurrentPosition(res, showError);
-    });
-}
+	// Get the current user coordinates
+	function getPosition() {
+		// Simple wrapper
+		return new Promise((res, showError) => {
+			navigator.geolocation.getCurrentPosition(res, showError);
+		});
+	}
 
-// Draw the map
-async function drawMap(coords_array) {
-    // Try and get current position
-    var myLat, myLong;
-    try {
-        var position = await getPosition();  // wait for getPosition to complete
-        myLat = position.coords.latitude;
-        myLong = position.coords.longitude;
-    }
-    // Catch the error
-    catch (error) {
-        switch (error.code) {
-            case error.PERMISSION_DENIED:
-                alert("Denied Geolocation request.");
-                break;
-            case error.POSITION_UNAVAILABLE:
-                alert("Location information unavailable.");
-                break;
-            case error.TIMEOUT:
-                alert("The request timed out.");
-                break;
-            case error.UNKNOWN_ERROR:
-                alert("Unknown error occurred.");
-                break;
-        }
-    }
+	// Draw the map
+	async function drawMap(coords_array) {
+		// Try and get current position
+		var myLat, myLong;
+		try {
+			var position = await getPosition();  // wait for getPosition to complete
+			myLat = position.coords.latitude;
+			myLong = position.coords.longitude;
+		}
+		// Catch the error
+		catch (error) {
+			switch (error.code) {
+				case error.PERMISSION_DENIED:
+					alert("Denied Geolocation request.");
+					break;
+				case error.POSITION_UNAVAILABLE:
+					alert("Location information unavailable.");
+					break;
+				case error.TIMEOUT:
+					alert("The request timed out.");
+					break;
+				case error.UNKNOWN_ERROR:
+					alert("Unknown error occurred.");
+					break;
+			}
+		}
 
-    // Create a map
-    var mymap = L.map('mapid').setView(coords_array[0], 15); // Initially 1st icon
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png' +
-                '?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXV' +
-                'ycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-        maxZoom: 18,
-        attribution: '',
-        id: 'mapbox.streets'
-    }).addTo(mymap);
-	
-
-	
-	// Add markers in the coordinates array
-    for (var i = 0; i < coords_array.length - 1; i++) {
-	
-		var pointA = new L.LatLng(coords_array[i][0], coords_array[i][1]);
-		var pointB = new L.LatLng(coords_array[i+1][0], coords_array[i+1][1]);
-		var pointList = [pointA, pointB];
+		// Create a map
+		var mymap = L.map('mapid').setView(coords_array[0], 15); // Initially 1st icon
+		L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png' +
+					'?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXV' +
+					'ycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+			maxZoom: 18,
+			attribution: '',
+			id: 'mapbox.streets'
+		}).addTo(mymap);
 		
-		var firstpolyline = new L.Polyline(pointList, {
-			color: 'red',
-			weight: 3,
-			opacity: 0.5,
-			smoothFactor: 1
+
+		
+		// Add markers in the coordinates array
+		for (var i = 0; i < coords_array.length - 1; i++) {
+		
+			var pointA = new L.LatLng(coords_array[i][0], coords_array[i][1]);
+			var pointB = new L.LatLng(coords_array[i+1][0], coords_array[i+1][1]);
+			var pointList = [pointA, pointB];
+			
+			var firstpolyline = new L.Polyline(pointList, {
+				color: 'red',
+				weight: 3,
+				opacity: 0.5,
+				smoothFactor: 1
+			});
+			
+			firstpolyline.addTo(mymap);
+			console.log("added line")
+		}
+		
+
+		// Add markers in the coordinates array
+		for (var i = 0; i < coords_array.length; i++) {
+			marker = new L.marker(coords_array[i])
+				.bindPopup("Point " + i) // Link to store pages
+				.addTo(mymap);
+				console.log("added")
+		}
+
+		// Distinct map marker for current location
+		var greenIcon = new L.Icon({
+			iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/' +
+					 'master/img/marker-icon-2x-green.png',
+			shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/' +
+					   'images/marker-shadow.png',
+			iconSize: [25, 41],
+			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			shadowSize: [41, 41]
 		});
 		
-		firstpolyline.addTo(mymap);
-		console.log("added line")
-    }
-	
+		// Add current location marker -- if it exists
+		/*
+		if (myLat && myLong) {
+			marker = new L.marker([myLat, myLong], { icon: greenIcon })
+				.bindPopup("<b>This is you</b>.")
+				.addTo(mymap);
+			coords_array.push([myLat, myLong]);
+		}
+		*/
 
-    // Add markers in the coordinates array
-    for (var i = 0; i < coords_array.length; i++) {
-        marker = new L.marker(coords_array[i])
-            .bindPopup("Point " + i) // Link to store pages
-            .addTo(mymap);
-			console.log("added")
-    }
+		// Fit the map to all markers
+		if (coords_array.length > 1) {
+			// Find the max north-south positions
+			max_south = coords_array[0][0];
+			max_north = coords_array[0][0];
+			for (var j = 1; j < coords_array.length; j++) {
+				if (coords_array[j][0] < max_south) {
+					max_south = coords_array[j][0];
+				}
+				else if (coords_array[j][0] > max_north) {
+					max_north = coords_array[j][0];
+				}
+			}
+			// Find the max east-west positions
+			max_east = coords_array[0][1];
+			max_west = coords_array[0][1];
+			for (var k = 1; k < coords_array.length; k++) {
+				if (coords_array[k][1] < max_east) {
+					max_east = coords_array[k][1];
+				}
+				else if (coords_array[k][1] > max_west) {
+					max_west = coords_array[k][1];
+				}
+			}
+			//View Southwest --> Northeast
+			mymap.fitBounds([
+				[max_south, max_west],
+				[max_north, max_east]
+			], { padding: [2, 2] });
+		}
+	}
 
-    // Distinct map marker for current location
-    var greenIcon = new L.Icon({
-        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/' +
-                 'master/img/marker-icon-2x-green.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/' +
-                   'images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    });
-	
-    // Add current location marker -- if it exists
-    if (myLat && myLong) {
-        marker = new L.marker([myLat, myLong], { icon: greenIcon })
-            .bindPopup("<b>This is you</b>.")
-            .addTo(mymap);
-        coords_array.push([myLat, myLong]);
-    }
-
-    // Fit the map to all markers
-    if (coords_array.length > 1) {
-        // Find the max north-south positions
-        max_south = coords_array[0][0];
-        max_north = coords_array[0][0];
-        for (var j = 1; j < coords_array.length; j++) {
-            if (coords_array[j][0] < max_south) {
-                max_south = coords_array[j][0];
-            }
-            else if (coords_array[j][0] > max_north) {
-                max_north = coords_array[j][0];
-            }
-        }
-        // Find the max east-west positions
-        max_east = coords_array[0][1];
-        max_west = coords_array[0][1];
-        for (var k = 1; k < coords_array.length; k++) {
-            if (coords_array[k][1] < max_east) {
-                max_east = coords_array[k][1];
-            }
-            else if (coords_array[k][1] > max_west) {
-                max_west = coords_array[k][1];
-            }
-        }
-        //View Southwest --> Northeast
-        mymap.fitBounds([
-            [max_south, max_west],
-            [max_north, max_east]
-        ], { padding: [2, 2] });
-    }
-}
-
-var my_coords = [[-24.9158511, 151.9281969],
-[-24.9102859, 151.9448466],
-[-24.9208587, 151.9371144],
-[-24.924378, 151.9460397],
-[-24.925991, 151.9340919],
-[-24.8745237, 151.8708398],
-[-24.8855635, 151.9122206],
-[-24.8950951, 151.9094754],
-[-24.9025067, 151.8989704],
-[-24.9106542, 151.873926],
-[-24.9074931, 151.8862344]]
-
-
-drawMap(my_coords);
-
+	var my_coords = [[-24.9158511, 151.9281969],
+	[-24.9102859, 151.9448466],
+	[-24.9208587, 151.9371144],
+	[-24.924378, 151.9460397],
+	[-24.925991, 151.9340919],
+	[-24.8745237, 151.8708398],
+	[-24.8855635, 151.9122206],
+	[-24.8950951, 151.9094754],
+	[-24.9025067, 151.8989704],
+	[-24.9106542, 151.873926],
+	[-24.9074931, 151.8862344]]
+	drawMap(my_coords);
 </script>
-
-<div id="mapid" style="width:500px;height:500px;"></div>
-<p>{{ testVar }}</p>
-<form action="/action_page.php">
-    <input type="submit" value="Submit">
-</form>
-
-<div class="container">
-    <div class="row">
-      <div class="col-sm">
-        One of three columns
-      </div>
-      <div class="col-sm">
-        One of three columns
-      </div>
-      <div class="col-sm">
-        One of three columns
-      </div>
-    </div>
-</div>
-
-</body>
-</html>
-
-
-
-
-
-
-
+{% endblock %}
