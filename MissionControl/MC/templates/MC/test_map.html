@@ -98,14 +98,12 @@ async function drawMap(coords_array) {
     });
 	
     // Add current location marker -- if it exists
-	/*
     if (myLat && myLong) {
         marker = new L.marker([myLat, myLong], { icon: greenIcon })
             .bindPopup("<b>This is you</b>.")
             .addTo(mymap);
         coords_array.push([myLat, myLong]);
     }
-	*/
 
     // Fit the map to all markers
     if (coords_array.length > 1) {
@@ -153,12 +151,14 @@ var my_coords = [[-24.9158511, 151.9281969],
 
 
 drawMap(my_coords);
+
 </script>
 
-<div id="mapid" style="width:1000px;height:1000px;"></div>
-
+<div id="mapid" style="width:500px;height:500px;"></div>
 <p>{{ testVar }}</p>
-
+<form action="/action_page.php">
+    <input type="submit" value="Submit">
+</form>
 
 </body>
 </html>
