@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1543023769091.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2012250114",
+    "id" : "4B0D6C1E",
+    "lastKnownWriteTime" : 1543027898,
+    "last_content_update" : 1543027899002,
+    "path" : "~/BoeingHackathon/QualityFresh/Documentation/Topic 3 - UAV Mission Control/distance_calculation.R",
+    "project_path" : "distance_calculation.R",
+    "properties" : {
+        "cursorPosition" : "9,0",
+        "scrollLine" : "0",
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
