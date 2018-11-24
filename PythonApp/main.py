@@ -6,8 +6,9 @@ from pyforms.controls   import ControlPlayer
 from pyforms.controls   import ControlButton
 from gmplot import gmplot
 from csv_parser import get_latitudes_and_longitudes
+import csv
 
-class ComputerVisionAlgorithm(BaseWidget):
+class ComputerVisionAlgorithm (BaseWidget):
 
     def __init__(self, *args, **kwargs):
         super().__init__('Computer vision algorithm example')
@@ -63,7 +64,12 @@ class ComputerVisionAlgorithm(BaseWidget):
         # Scatter POI data
         top_attraction_lats, top_attraction_lons = zip(*path)
         gmap.scatter(top_attraction_lats, top_attraction_lons, '#3B0B39', size=40, marker=False)
-        gmap.plot(top_attraction_lats, top_attraction_lons, 'red', edge_width=1)
+        gmap.plot(top_attraction_lats, top_attraction_lons, 'blue', edge_width=1)
+
+
+        with open('best_path.csv', 'w', newline = '') as f:
+            writer = csv.writer(f)
+            writer.writerows(zip(top_attraction_lats, top_attraction_lons, range(1, len(top_attraction_lats))))
 
         # Marker
         counter = 0
