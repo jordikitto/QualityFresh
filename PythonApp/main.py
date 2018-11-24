@@ -29,6 +29,7 @@ class ComputerVisionAlgorithm (BaseWidget):
         return ((P1[0] - P2[0])**2 + (P1[1] - P2[1])**2) ** 0.5
 
 
+    # Optimised path algorithm
     def optimized_path(self, coords, start=None):
         """
         This function finds the nearest point to a point
@@ -56,27 +57,26 @@ class ComputerVisionAlgorithm (BaseWidget):
         # define a start point
         start = [poi_data[0][0], poi_data[0][1]]
 
+        # get the optimised path
         path = self.optimized_path(list(poi_data), start)
 
         # Place map
         gmap = gmplot.GoogleMapPlotter(poi_data[0][0], poi_data[0][1], 10)
 
-        # Scatter POI data
+        # Scatter and plot POI data
         top_attraction_lats, top_attraction_lons = zip(*path)
-        gmap.scatter(top_attraction_lats, top_attraction_lons, '#3B0B39', size=40, marker=False)
-        gmap.plot(top_attraction_lats, top_attraction_lons, 'blue', edge_width=1)
-
+        gmap.scatter(top_attraction_lats, top_attraction_lons, '#3B0B39', size=40, marker=False) #draw dots
+        gmap.plot(top_attraction_lats, top_attraction_lons, 'red', edge_width=1) #draw lines between dots
 
         with open('best_path.csv', 'w', newline = '') as f:
             writer = csv.writer(f)
             writer.writerows(zip(top_attraction_lats, top_attraction_lons, range(1, len(top_attraction_lats))))
 
-        # Marker
         counter = 0
         for lat_long_data in path:
             counter = counter + 1
             lat, lon = lat_long_data
-            gmap.marker(lat, lon, title=str(counter))
+            gmap.marker(lat, lon, title=str(counter)) # place the marker
 
         # Draw
         gmap.draw("my_map.html")
@@ -87,5 +87,6 @@ class MissonControl(BaseWidget):
         super().__init__('Computer vision algorithm example')
 
 if __name__ == '__main__':
+    # Start the application
     from pyforms import start_app
     start_app(ComputerVisionAlgorithm)
