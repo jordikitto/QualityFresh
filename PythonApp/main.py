@@ -54,6 +54,5 @@ class ComputerVisionAlgorithm(BaseWidget):
 
 
 if __name__ == '__main__':
-
     from pyforms import start_app
     start_app(ComputerVisionAlgorithm)
