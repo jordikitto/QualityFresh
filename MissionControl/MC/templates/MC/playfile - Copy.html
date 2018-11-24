@@ -11,16 +11,20 @@ Map Display
 
 <!-- Content goes here -->
 {% block content %}
-    <div class="container-fluid">
-        <div class="row">
-          <div class="col-sm">
-            <div id="mapid" style="width:1000px;height:1000px;"></div>
-          </div>
-          <div class="col-sm">
-            <button type="button" class="btn btn-primary">Import POI's</button>
-          </div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm">
+            <div id="mapid" style="width:500px; height:500px; margin:auto;"></div>
         </div>
-      </div>
+        <div class="col-sm">
+            <form action="/MC/" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 <!-- Extra javascript goes here -->
@@ -70,33 +74,28 @@ Map Display
 			attribution: '',
 			id: 'mapbox.streets'
 		}).addTo(mymap);
-		
 
-		
 		// Add markers in the coordinates array
 		for (var i = 0; i < coords_array.length - 1; i++) {
-		
+
 			var pointA = new L.LatLng(coords_array[i][0], coords_array[i][1]);
 			var pointB = new L.LatLng(coords_array[i+1][0], coords_array[i+1][1]);
-			var pointList = [pointA, pointB];
-			
-			var firstpolyline = new L.Polyline(pointList, {
+
+			var firstpolyline = new L.Polyline([pointA, pointB], {
 				color: 'red',
-				weight: 3,
+				weight: 1,
 				opacity: 0.5,
 				smoothFactor: 1
 			});
-			
+
 			firstpolyline.addTo(mymap);
 		}
-		
 
 		// Add markers in the coordinates array
-		for (var i = 0; i < coords_array.length; i++) {
-			marker = new L.marker(coords_array[i])
+        for (var i = 0; i < coords_array.length; i++) {
+            marker = new L.circle(coords_array[i], 1)
 				.bindPopup("Point " + i) // Link to store pages
 				.addTo(mymap);
-				console.log("added")
 		}
 
 		// Distinct map marker for current location
@@ -110,13 +109,15 @@ Map Display
 			popupAnchor: [1, -34],
 			shadowSize: [41, 41]
 		});
-		
+
 		// Add current location marker -- if it exists
 		if (myLat && myLong) {
 			marker = new L.marker([myLat, myLong], { icon: greenIcon })
 				.bindPopup("<b>This is you</b>.")
-				.addTo(mymap);
-			coords_array.push([myLat, myLong]);
+                .addTo(mymap);
+            if (coords_array.length < 1) {
+                coords_array.push([myLat, myLong]);
+            }
 		}
 
 		// Fit the map to all markers
@@ -150,18 +151,6 @@ Map Display
 			], { padding: [2, 2] });
 		}
 	}
-
-	var my_coords = [[-24.9158511, 151.9281969],
-	[-24.9102859, 151.9448466],
-	[-24.9208587, 151.9371144],
-	[-24.924378, 151.9460397],
-	[-24.925991, 151.9340919],
-	[-24.8745237, 151.8708398],
-	[-24.8855635, 151.9122206],
-	[-24.8950951, 151.9094754],
-	[-24.9025067, 151.8989704],
-	[-24.9106542, 151.873926],
-	[-24.9074931, 151.8862344]]
-	drawMap(my_coords);
+    drawMap({{ latlong }});
 </script>
 {% endblock %}
