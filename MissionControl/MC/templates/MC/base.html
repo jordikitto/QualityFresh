@@ -1,0 +1,46 @@
+﻿{% load static %}
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    {% load static %}
+    <!-- Dynamically include a title -->
+    <title>{% block title %}Default Title{% endblock %}</title>
+
+    <!-- link to stylesheets and JavaScript -->
+    <link rel="shortcut icon" href="{% static 'CarRentalCompany/Images/favicon.ico' %}" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="{% static 'CarRentalCompany/stylesheet.css' %}">
+    <script src="{% static 'CarRentalCompany/javascript.js' %}"></script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <!-- PYGAL -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="http://kozea.github.com/pygal.js/latest/pygal-tooltips.min.js"></script>
+
+    <!-- Dynamically include extra styling -->
+    {% block stylesheet %}{% endblock %}
+</head>
+
+<body>
+    <!-- Header -->
+    {% include "./Includes/header.html" %}
+
+    <!-- Content here gets extended -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    {% include "./Includes/footer.html" %}
+
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <!-- <script src="{% static 'js/app.js' %}"></script>    -->
+    <!-- Dynamically include extra javascript -->
+    {% block javascript %}{% endblock %}
+</body>
+
+</html>
