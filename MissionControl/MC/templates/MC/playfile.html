@@ -1,0 +1,32 @@
+{% extends './base.html' %}
+
+<!-- Title goes here -->
+{% block title %}
+Map Display
+{% endblock %}
+
+<!-- Extra styling goes here -->
+{% block stylesheet %}
+{% endblock %}
+
+<!-- Content goes here -->
+{% block content %}
+
+<h3>Show a file to be chosen:</h3>
+<form action="{% url 'testpage' %}" method="post" id="formCSV">
+	{% csrf_token %}
+	Select a file: <input type="file" name="myFile"><br><br>
+	Select a file: <input type="field" name="myTest" value="NICE"><br><br>
+	<input type="submit">
+</form>
+
+{{ context }}
+{{ context2 }}
+
+
+
+{% endblock %}
+
+<!-- Extra javascript goes here -->
+{% block javascript %}
+{% endblock %}
