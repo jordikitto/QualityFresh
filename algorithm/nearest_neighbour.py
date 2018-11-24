@@ -52,7 +52,7 @@ def getResponse(neighbors):
 			classVotes[response] += 1
 		else:
 			classVotes[response] = 1
-	sortedVotes = sorted(classVotes.iteritems(), key=operator.itemgetter(1), reverse=True)
+	sortedVotes = sorted(classVotes.items(), key=operator.itemgetter(1), reverse=True)
 	return sortedVotes[0][0]
  
 def getAccuracy(testSet, predictions):
