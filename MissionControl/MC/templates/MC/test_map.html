@@ -11,8 +11,16 @@ Map Display
 
 <!-- Content goes here -->
 {% block content %}
-	<div id="mapid" style="width:1000px;height:1000px;"></div>
-	<p>{{ testVar }}</p>
+    <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm">
+            <div id="mapid" style="width:1000px;height:1000px;"></div>
+          </div>
+          <div class="col-sm">
+            <button type="button" class="btn btn-primary">Import POI's</button>
+          </div>
+        </div>
+      </div>
 {% endblock %}
 
 <!-- Extra javascript goes here -->
