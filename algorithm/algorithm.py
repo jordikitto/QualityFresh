@@ -69,6 +69,33 @@ def two_opt(route, distlist):
           route = best
      return best
 
+def split_visit(visitList, distlist, start):
+    startLL = distlist[start]
+    netdist = 0
+    goback = []
+    reset = False
+    for x in range(1, len(visitList)):
+        # Find the next point
+        y = x - 1
+
+        # update distance
+        fromLL = distlist[y]
+        if (reset):
+            fromLL = startLL
+        toLL = distlist[x]
+        netdist += haversine_distance(toLL, fromLL)
+        
+        if (netdist > 6):
+            # go back after we hit
+            reset = True
+            netdist = 0
+            goback.append(y + 1)
+        else:
+            reset = False
+    for index in reversed(goback):
+        visitList.insert(index, start)    
+    return visitList
+
 def main():
     distlist = [[-24.9158511, 151.9281969],
                 [-24.9102859, 151.9448466],
@@ -81,14 +108,34 @@ def main():
     
     # Distance Matrix
     distMat = dist_mat(distlist)
+
+    start = 0
     
     # Visit list
-    visitList = visit_list(distMat, 0)
+    visitList = visit_list(distMat, start)
+
+    visitList = split_visit(visitList, distlist, start)
+
+
+    indexList = [i for i, e in enumerate(visitList) if e == start]
+    indexList.append(len(visitList) + 1)
+
+    print(indexList)
+
+    tripMat = []
+    for x in range(len(indexList)-1):
+        starter = indexList[x]
+        stopper = indexList[x + 1]
+        sliced = visitList[starter:stopper]
+        tripMat.append(sliced)
+
+    print(tripMat)
+    
+
+
     print(visitList)
 
-    twoOpt = two_opt(visitList, distlist)
-    
-    print(twoOpt)
+    #twoOpt = two_opt(visitList, distlist)
 
 
 main()

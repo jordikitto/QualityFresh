@@ -50,10 +50,10 @@ TaskID,TaskType,AssetCode,Field,Region,Latitude,Longitude,Elevation,CreatedDate
 1234,Warehouse,F15_WH165,Strike Eagle,Northern,-24.939575,151.9482552,276.68,08-06-18
 1234,Warehouse,F15_WH166,Strike Eagle,Northern,-24.9521316,151.8865617,265.48,08-06-18
 1234,Warehouse,F15_WH167,Strike Eagle,Northern,-24.9516856,151.8938908,261.82,08-06-18
-1234,Warehouse,F15_WH168,Strike Eagle,Northern,-24.9461612,151.9068584,273.92,08-06-18
-1234,Warehouse,F15_WH169,Strike Eagle,Northern,-24.94523,151.9135015,270.51,08-06-18
-1234,Warehouse,F15_WH170,Strike Eagle,Northern,-24.9478365,151.9234958,281.23,08-06-18
-1234,Warehouse,F15_WH171,Strike Eagle,Northern,-24.9491217,151.9388882,283.09,08-06-18
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
+,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,
 ,,,,,,,,

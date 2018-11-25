@@ -6,6 +6,7 @@ from pyforms.controls   import ControlPlayer
 from pyforms.controls   import ControlButton
 from gmplot import gmplot
 from csv_parser import get_latitudes_and_longitudes
+from ortools_method import OrToolsRouter
 import csv
 
 class ComputerVisionAlgorithm (BaseWidget):
@@ -49,34 +50,49 @@ class ComputerVisionAlgorithm (BaseWidget):
 
     def __show_map_action(self):
         # GET POI data
-        poi_data = get_latitudes_and_longitudes('poi.csv')
+        poi_data = get_latitudes_and_longitudes('poi-med.csv')
 
         # sort POI data
         #poi_data.sort(key=lambda key: [key[1], key[0]])
 
-        # define a start point
-        start = [poi_data[0][0], poi_data[0][1]]
+        # OR TOOLS TEST
+        ortools = OrToolsRouter(poi_data)
+        ortools.run()
+        paths = ortools.get_routed_data()
 
+        # define a start point
+        #start = [poi_data[0][0], poi_data[0][1]]
         # get the optimised path
-        path = self.optimized_path(list(poi_data), start)
+        #path = self.optimized_path(list(poi_data), start)
 
         # Place map
-        gmap = gmplot.GoogleMapPlotter(poi_data[0][0], poi_data[0][1], 10)
+        start_lat = paths[0][0][0]
+        start_long = paths[0][0][1]
+        gmap = gmplot.GoogleMapPlotter(start_lat, start_long, 10)
+        gmap.marker(start_lat, start_long, color='green', title="Home") # place the marker
 
         # Scatter and plot POI data
-        top_attraction_lats, top_attraction_lons = zip(*path)
-        gmap.scatter(top_attraction_lats, top_attraction_lons, '#3B0B39', size=40, marker=False) #draw dots
-        gmap.plot(top_attraction_lats, top_attraction_lons, 'red', edge_width=1) #draw lines between dots
+        colours = ['red', 'green', 'blue', 'white', 'yellow']
+        colour_count = 0
+        for path in paths:
+            top_attraction_lats, top_attraction_lons = zip(*path)
+            lats = (*top_attraction_lats, top_attraction_lats[0])
+            lons = (*top_attraction_lons, top_attraction_lons[0])
+            gmap.scatter(lats, lons, '#3B0B39', size=40, marker=False) #draw dots
+            gmap.plot(lats, lons, colours[colour_count], edge_width=1) #draw lines between dots
+            colour_count = (colour_count + 1) % len(colours)
 
-        with open('best_path.csv', 'w', newline = '') as f:
-            writer = csv.writer(f)
-            writer.writerows(zip(top_attraction_lats, top_attraction_lons, range(1, len(top_attraction_lats))))
+            counter = 0
+            #for lat_long_data in (lats, lons)):
+             #   counter = counter + 1
+              #  lat, lon = lat_long_data
+                #gmap.marker(lat, lon, title=str(counter)) # place the marker
 
-        counter = 0
-        for lat_long_data in path:
-            counter = counter + 1
-            lat, lon = lat_long_data
-            gmap.marker(lat, lon, title=str(counter)) # place the marker
+        #with open('best_path.csv', 'w', newline = '') as f:
+         #   writer = csv.writer(f)
+         #   writer.writerows(zip(top_attraction_lats, top_attraction_lons, range(1, len(top_attraction_lats))))
+
+        
 
         # Draw
         gmap.draw("my_map.html")

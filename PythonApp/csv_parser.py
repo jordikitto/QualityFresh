@@ -9,5 +9,5 @@ def get_latitudes_and_longitudes(filename):
 	# CSV is now closed
 	return locations
 
-#locations = get_latitudes_and_longitudes('poi.csv')
-#print(locations[0][0])
+locations = get_latitudes_and_longitudes('poi.csv')
+print(locations[0])
