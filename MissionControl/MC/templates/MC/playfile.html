@@ -37,6 +37,7 @@ Map Display
         <div class="visible" style="flex: 1;">
             <div style="display: flex; padding-top: 20px; justify-content: center;"></div>
                 <div>
+                    <h2 style="padding-left:20px;">Upload CSV</h2>
                     <form name="csvForm" action="/MC/" method="post" enctype="multipart/form-data" class="centred" style="margin: auto; padding-left: 20px;">
                         {% csrf_token %}
                         {{ form.as_p }}
