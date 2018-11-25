@@ -33,23 +33,27 @@ Map Display
 
 <div style="height:100%;">
     <div class="container cont-row visible">
-        <div class="visible">
+        <div class="visible" style="flex: 3;">
             <div id="mapid" style="width:100%; height:500px; margin:auto;"></div>
         </div>
-        <div class="visible" style="display: flex; padding-top: 20px; justify-content: center;">
-            <div>
-                <form name="csvForm" action="/MC/" method="post" enctype="multipart/form-data" class="centred" style="margin: auto;">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input name="subType" type="submit" value="Submit">
-                    <input name="subType" type="submit" value="Submit (OrTools)">
-                    <input name="subType" type="button" onclick="exportme()" value="Export" />
-                </form>
+        <div class="visible" style="flex: 1;">
+            <div style="display: flex; padding-top: 20px; justify-content: center;"></div>
+                <div>
+                    <form name="csvForm" action="/MC/" method="post" enctype="multipart/form-data" class="centred" style="margin: auto; padding-left: 20px;">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input name="subType" type="submit" value="Submit">
+                        <input name="subType" type="submit" value="Submit (OrTools)">
+                        <input name="subType" type="button" onclick="exportme()" value="Export" />
+                    </form>
 
-                <br />
-                <button type="button" onclick="changeView('previous')">PREV</button>
-                <button type="button" onclick="resetView()">RESET</button>
-                <button type="button" onclick="changeView('next')">NEXT</button>
+                    <br />
+                    <div style="margin: auto; padding-left: 20px;">
+                        <button type="button" onclick="changeView('previous')">PREV</button>
+                        <button type="button" onclick="resetView()">RESET</button>
+                        <button type="button" onclick="changeView('next')">NEXT</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
