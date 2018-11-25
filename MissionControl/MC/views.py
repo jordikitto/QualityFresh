@@ -104,8 +104,8 @@ def main(distlist):
     newLL = []
     for x in visitList:
         newLL.append(distlist[x])
-    costList = [0]
 
+    costList = cost(visitList, distlist)
     return [newLL, costList]
 
 
@@ -137,11 +137,11 @@ def upload_file(request):
                 # JORDI
                 pass
             else:
-                [latlong, costList] = main(latlong)
+                [latlong, cost] = main(latlong)
             form.errors.clear()
             return render(request, 
                             'MC/playfile.html', 
-                            {'form': form, 'latlong': latlong})
+                            {'form': form, 'latlong': latlong, 'distCost': cos})
     else:
         form = UploadFileForm()
     return render(request, 
