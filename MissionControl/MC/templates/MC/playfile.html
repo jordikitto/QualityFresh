@@ -35,7 +35,7 @@ Map Display
         <div class="visible">
             <div id="mapid" style="width:100%; height:500px; margin:auto;"></div>
         </div>
-        <div class="visible">
+        <div style="padding-left:10px" class="visible">
             <form name="csvForm" action="/MC/" method="post" enctype="multipart/form-data" class="centred">
                 {% csrf_token %}
                 {{ form.as_p }}
