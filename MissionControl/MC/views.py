@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .forms import UploadFileForm
 from io import TextIOWrapper
 import csv
-from .ortools_method import OrToolsRouter
+#from .ortools_method import OrToolsRouter
 from math import *
 
 def haversine_distance(assetA, assetB):
@@ -90,7 +90,9 @@ def main(distlist):
     
     # Distance Matrix
     distMat = dist_mat(distlist)
-    start =  0
+    start = 107
+    if (start > len(distMat)):
+        start = 0
     
     # Visit list
     visitList = visit_list(distMat, start)
@@ -105,8 +107,30 @@ def main(distlist):
     for x in visitList:
         newLL.append(distlist[x])
 
-    costList = cost(visitList, distlist)
+    costList = 0 #cost(visitList, distlist)
     return [newLL, costList]
+
+def export_file(request):
+    # fields
+    exp_results = [['Latitude', 'Longitude']]
+    latlong = handle_uploaded_file(request.FILES['file'])
+
+    # Create the HttpResponse object with the appropriate CSV header.
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="flightpath.csv"'
+
+    #
+    for x in latlong:
+        exp_results.append([x[0], x[1]])
+
+    # Write to HTTP obj and download!
+    writer = csv.writer(response)
+    for exp_result in exp_results:
+        writer.writerow(exp_result)
+    return response
+
+
+
 
 
 def index(request):  
