@@ -96,15 +96,14 @@ def main(distlist):
     visitList = visit_list(distMat, start)
     visitList = split_visit(visitList, distlist, start)
 
+    # Get indeces of zeroes
     indexList = [i for i, e in enumerate(visitList) if e == start]
     indexList.append(len(visitList) + 1)
 
-    #visitList = two_opt(visitList, distlist)
-
+    # New latitude and longitude - based off 
     newLL = []
     for x in visitList:
         newLL.append(distlist[x])
-
     costList = [0]
 
     return [newLL, costList]
@@ -126,7 +125,6 @@ def handle_uploaded_file(f):
 def upload_file(request):
     # Default
     latlong = [[27.4698, -153.0251]];
-
     # If Post
     if request.method == 'POST':
         data = request.POST.copy()
@@ -136,7 +134,6 @@ def upload_file(request):
             latlong = handle_uploaded_file(request.FILES['file'])
             form.errors.clear()
             [latlong, costList] = main(latlong)
-            
             return render(request, 
                           'MC/playfile.html', 
                           {'form': form, 'latlong': latlong})
