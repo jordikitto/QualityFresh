@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .forms import UploadFileForm
 from io import TextIOWrapper
 import csv
-
+from .ortools_method import OrToolsRouter
 from math import *
 
 def haversine_distance(assetA, assetB):
@@ -27,7 +27,7 @@ def dist_mat(distlist):
         
 def get_min(subList, blacklist):
     nextMin = 1000000
-    nextIndex = -1;
+    nextIndex = -1
     for x in range(len(subList)):
         if ((subList[x] < nextMin) and (x not in blacklist)):
             nextMin = subList[x]
@@ -96,19 +96,17 @@ def main(distlist):
     visitList = visit_list(distMat, start)
     visitList = split_visit(visitList, distlist, start)
 
+    # Get indeces of zeroes
     indexList = [i for i, e in enumerate(visitList) if e == start]
     indexList.append(len(visitList) + 1)
 
-    #visitList = two_opt(visitList, distlist)
-
+    # New latitude and longitude - based off 
     newLL = []
     for x in visitList:
         newLL.append(distlist[x])
 
-    costList = [0]
-
+    costList = cost(visitList, distlist)
     return [newLL, costList]
-
 
 
 def index(request):  
@@ -123,10 +121,24 @@ def handle_uploaded_file(f):
                                 row['TaskType']])
     return coordinates
 
+def ortools_calculate(lat_long_type):
+    lat_long = [(l[0], l[1]) for l in lat_long_type]
+    ortools = OrToolsRouter(lat_long)
+    ortools.run()
+    paths = ortools.get_routed_data()
+    return_latlong = []
+    print("########PATHS@#########")
+    print(paths)
+    for path in paths:
+        for latlong in path:
+            return_latlong.append([latlong[0], latlong[1], "Node"])
+    print("########FORMATTED@#########")
+    print(return_latlong)
+    return return_latlong
+
 def upload_file(request):
     # Default
     latlong = [[27.4698, -153.0251]];
-
     # If Post
     if request.method == 'POST':
         data = request.POST.copy()
@@ -134,12 +146,16 @@ def upload_file(request):
         if not form.is_valid():
             title = data.get('title')
             latlong = handle_uploaded_file(request.FILES['file'])
+            print(latlong)
+            if (data.get('subType') == 'Submit (OrTools)'):
+                # JORDI
+                latlong = ortools_calculate(latlong)
+            else:
+                [latlong, cost] = main(latlong)
             form.errors.clear()
-            [latlong, costList] = main(latlong)
-            
             return render(request, 
-                          'MC/playfile.html', 
-                          {'form': form, 'latlong': latlong})
+                            'MC/playfile.html', 
+                            {'form': form, 'latlong': latlong, 'distCost': cos})
     else:
         form = UploadFileForm()
     return render(request, 

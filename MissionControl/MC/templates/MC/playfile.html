@@ -28,7 +28,8 @@ Map Display
             <form action="/MC/" method="post" enctype="multipart/form-data" class="centred">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <input type="submit" value="Submit">
+                <input name="subType" type="submit" value="Submit">
+                <input name="subType" type="submit" value="Submit (OrTools)">
             </form>
             <br />
             <button type="button" onclick="changeView('previous')">PREV</button>
@@ -36,6 +37,7 @@ Map Display
             <button type="button" onclick="changeView('next')">NEXT</button>
         </div>
     </div>
+     {{ distCost }}
 </div>
 {% endblock %}
 
