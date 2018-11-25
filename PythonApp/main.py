@@ -59,7 +59,6 @@ class ComputerVisionAlgorithm (BaseWidget):
         ortools = OrToolsRouter(poi_data)
         ortools.run()
         paths = ortools.get_routed_data()
-        print(paths)
 
         # define a start point
         #start = [poi_data[0][0], poi_data[0][1]]

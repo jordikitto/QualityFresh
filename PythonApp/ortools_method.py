@@ -62,7 +62,7 @@ class OrToolsRouter(object):
 	def add_distance_dimension(self, routing, distance_callback):
 		"""Add Global Span constraint"""
 		distance = 'Distance'
-		maximum_distance = 600  # Maximum distance per vehicle.
+		maximum_distance = 300  # Maximum distance per vehicle.
 		routing.AddDimension(
 			distance_callback,
 			0,  # null slack
@@ -93,14 +93,14 @@ class OrToolsRouter(object):
 				route.append(data["locations"][node_index])
 				index = assignment.Value(routing.NextVar(index))
 				#distance += routing.GetArcCostForVehicle(previous_index, index, vehicle_id)
-				print(routing.GetArcCostForVehicle(previous_index, index, vehicle_id))
+				#print(routing.GetArcCostForVehicle(previous_index, index, vehicle_id))
 				if (index < len(data["locations"])):
 					curr_pos = data["locations"][index]
 					if previous_index < len(data["locations"]):
 						prev_pos = data["locations"][previous_index]
 						the_dist = self.calculate_distance(prev_pos, curr_pos)
 						distance += the_dist
-						print("Dist: "+str(the_dist) + " km")
+						#print("Dist: "+str(the_dist) + " km")
 			plan_output += ' {}\n'.format(routing.IndexToNode(index))
 			plan_output += 'Distance of route: {} km\n'.format(distance)
 			print(plan_output)
