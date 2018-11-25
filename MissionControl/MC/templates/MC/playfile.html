@@ -67,13 +67,18 @@ function drawMap(coords_array) {
         }
         return color;
     }
+    myColors = ['red', 'green', 'black', 'blue', 'magenta', 'yellow'];
+    //myColor = myColors[0];
     myColor = getRandomColor()
+    var colour_counter = 0;
 	// Add markers in the coordinates array
 	for (var i = 0; i < coords_array.length - 1; i++) {
 		var pointA = new L.LatLng(coords_array[i][0], coords_array[i][1]);
         var pointB = new L.LatLng(coords_array[i + 1][0], coords_array[i + 1][1]);
 
         if (coords_array[i][0] == coords_array[0][0] && coords_array[i][1] == coords_array[0][1]) {
+            //colour_counter++;
+            //myColor = myColors[colour_counter % myColors.length];
             myColor = getRandomColor()
         }
 		var firstpolyline = new L.Polyline([pointA, pointB], {

@@ -127,13 +127,10 @@ def ortools_calculate(lat_long_type):
     ortools.run()
     paths = ortools.get_routed_data()
     return_latlong = []
-    print("########PATHS@#########")
-    print(paths)
     for path in paths:
+        path = (*path, path[0])
         for latlong in path:
             return_latlong.append([latlong[0], latlong[1], "Node"])
-    print("########FORMATTED@#########")
-    print(return_latlong)
     return return_latlong
 
 def upload_file(request):
@@ -146,7 +143,7 @@ def upload_file(request):
         if not form.is_valid():
             title = data.get('title')
             latlong = handle_uploaded_file(request.FILES['file'])
-            print(latlong)
+            #print(latlong)
             if (data.get('subType') == 'Submit (OrTools)'):
                 # JORDI
                 latlong = ortools_calculate(latlong)

@@ -8,6 +8,7 @@ from gmplot import gmplot
 from csv_parser import get_latitudes_and_longitudes
 from ortools_method import OrToolsRouter
 import csv
+import os
 
 class ComputerVisionAlgorithm (BaseWidget):
 
@@ -29,6 +30,15 @@ class ComputerVisionAlgorithm (BaseWidget):
 
         return ((P1[0] - P2[0])**2 + (P1[1] - P2[1])**2) ** 0.5
 
+    def WriteListToCSV(self, csv_file,csv_columns,data_list):
+        try:
+            with open(csv_file, 'w') as csvfile:
+                writer = csv.writer(csvfile, dialect='excel', quoting=csv.QUOTE_NONNUMERIC)
+                writer.writerow(csv_columns)
+                for data in data_list:
+                    writer.writerow(data)
+        except:
+            print("Error writing")    
 
     # Optimised path algorithm
     def optimized_path(self, coords, start=None):
@@ -92,7 +102,17 @@ class ComputerVisionAlgorithm (BaseWidget):
          #   writer = csv.writer(f)
          #   writer.writerows(zip(top_attraction_lats, top_attraction_lons, range(1, len(top_attraction_lats))))
 
-        
+        # Write path data to CSV
+        # Get into format lat, long, flight
+        write_list = []
+        flight_num = 0
+        for path in paths:
+            for path in paths:
+                path = (*path, path[0])
+                for latlong in path:
+                    write_list.append([latlong[0], latlong[1], flight_num])
+            flight_num = flight_num + 1
+        self.WriteListToCSV("output.csv", ["lat", "long", "flight"], write_list)
 
         # Draw
         gmap.draw("my_map.html")
