@@ -11,7 +11,7 @@ def haversine_distance(assetA, assetB):
     latA, longA, latB, longB = map(radians, [assetA[0], assetA[1], assetB[0], assetB[1]])
     delta_lon = longB - longA
     delta_lat = latB - latA
-    a = sin(delta_lat/2)**2 + cos(latA) * cos(latB) * sin(delta_lon/2)**2
+    a = sin(delta_lat/2)**2 + cos(latA) * cos(latB) * sin(delta_lon/2)**2   
     c = 2 * asin(sqrt(a))
     # approximate radius of the Earth: 6371 km
     return c * 6371
@@ -49,21 +49,65 @@ def visit_list(distMat, startIndex):
     return path
         
    
+def cost(route, distlist):
+    distance = 0
+    for x in route:
+        y = x + 1
+        if y == len(route):
+            y = 0
+        distance += haversine_distance(distlist[x], distlist[y])
+    return distance
+
+
+def split_visit(visitList, distlist, start):
+    startLL = distlist[start]
+    netdist = 0
+    goback = []
+    reset = False
+    for x in range(1, len(visitList)):
+        # Find the next point
+        y = x - 1
+
+        # update distance
+        fromLL = distlist[y]
+        if (reset):
+            fromLL = startLL
+        toLL = distlist[x]
+        netdist += haversine_distance(toLL, fromLL)
+        
+        if (netdist > 600):
+            # go back after we hit
+            reset = True
+            netdist = 0
+            goback.append(y + 1)
+        else:
+            reset = False
+    for index in reversed(goback):
+        visitList.insert(index, start)    
+    return visitList
+
 def main(distlist):
     
     # Distance Matrix
     distMat = dist_mat(distlist)
+    start =  0
     
     # Visit list
-    visitList = visit_list(distMat, 3)
+    visitList = visit_list(distMat, start)
+    visitList = split_visit(visitList, distlist, start)
+
+    indexList = [i for i, e in enumerate(visitList) if e == start]
+    indexList.append(len(visitList) + 1)
+
+    #visitList = two_opt(visitList, distlist)
 
     newLL = []
     for x in visitList:
         newLL.append(distlist[x])
 
-    print(visitList)
-    print(newLL)
-    return newLL
+    costList = [0]
+
+    return [newLL, costList]
 
 
 
@@ -91,7 +135,8 @@ def upload_file(request):
             title = data.get('title')
             latlong = handle_uploaded_file(request.FILES['file'])
             form.errors.clear()
-            latlong = main(latlong)
+            [latlong, costList] = main(latlong)
+            
             return render(request, 
                           'MC/playfile.html', 
                           {'form': form, 'latlong': latlong})
