@@ -14,12 +14,18 @@ Map Display
     <form action="/MC/" method="post" enctype="multipart/form-data" class="centred">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="Submit">
     </form>
-    <iframe width="100%" height="800" frameborder="0" src="https://kleingeard.carto.com/builder/01823822-828d-4c4b-b51f-854b212eb0d4/embed" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+    <button type="button" onclick="showMap()">Generate Route</button>
+    <iframe hidden id="map" width="100%" height="800" frameborder="0" src="https://kleingeard.carto.com/builder/01823822-828d-4c4b-b51f-854b212eb0d4/embed?state=%7B%22map%22%3A%7B%22ne%22%3A%5B-25.268915156482656%2C151.20483398437503%5D%2C%22sw%22%3A%5B-24.784240964957117%2C152.51220703125003%5D%2C%22center%22%3A%5B-25.02681733121245%2C151.85852050781253%5D%2C%22zoom%22%3A11%7D%2C%22widgets%22%3A%7B%2237e3b4e4-30d0-4c8e-8b51-2570677b5e0d%22%3A%7B%22normalized%22%3Atrue%7D%7D%7D" allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
 
 {% endblock %}
 
 <!-- Extra javascript goes here -->
 {% block javascript %}
+<script>
+    function showMap() {
+        var map = document.getElementById("map");
+        map.hidden = false;
+    }
+</script>
 {% endblock %}
