@@ -130,9 +130,6 @@ def export_file(request):
     return response
 
 
-
-
-
 def index(request):  
     return render(request, 'MC/test_map.html', {'testVar':"Hi Jordi"})
 
