@@ -162,6 +162,46 @@ Map Display
 
     function resetView() {
 
+        currentPos = -1;
+        prevPos = -1;
+        nextPos = -1;
+        change = null;
+
+        group.eachLayer(function (layer) {
+             layer.closePopup()
+        });
+
+        coords_array = latlong;
+        // Fit the map to all markers
+        if (coords_array.length > 1) {
+            // Find the max north-south positions
+            max_south = coords_array[0][0];
+            max_north = coords_array[0][0];
+            for (var j = 1; j < coords_array.length; j++) {
+                if (coords_array[j][0] < max_south) {
+                    max_south = coords_array[j][0];
+                }
+                else if (coords_array[j][0] > max_north) {
+                    max_north = coords_array[j][0];
+                }
+            }
+            // Find the max east-west positions
+            max_east = coords_array[0][1];
+            max_west = coords_array[0][1];
+            for (var k = 1; k < coords_array.length; k++) {
+                if (coords_array[k][1] < max_east) {
+                    max_east = coords_array[k][1];
+                }
+                else if (coords_array[k][1] > max_west) {
+                    max_west = coords_array[k][1];
+                }
+            }
+            //View Southwest --> Northeast
+            mymap.fitBounds([
+                [max_south, max_west],
+                [max_north, max_east]
+            ], { padding: [1, 1] });
+        }
     }
 
     function fixPos(position) {
