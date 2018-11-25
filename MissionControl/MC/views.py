@@ -3,7 +3,7 @@ from django.shortcuts import render
 from .forms import UploadFileForm
 from io import TextIOWrapper
 import csv
-
+from .ortools_method import OrToolsRouter
 from math import *
 
 def haversine_distance(assetA, assetB):
@@ -27,7 +27,7 @@ def dist_mat(distlist):
         
 def get_min(subList, blacklist):
     nextMin = 1000000
-    nextIndex = -1;
+    nextIndex = -1
     for x in range(len(subList)):
         if ((subList[x] < nextMin) and (x not in blacklist)):
             nextMin = subList[x]
@@ -109,7 +109,6 @@ def main(distlist):
     return [newLL, costList]
 
 
-
 def index(request):  
     return render(request, 'MC/test_map.html', {'testVar':"Hi Jordi"})
 
@@ -121,6 +120,21 @@ def handle_uploaded_file(f):
                                 eval(row['Longitude']), 
                                 row['TaskType']])
     return coordinates
+
+def ortools_calculate(lat_long_type):
+    lat_long = [(l[0], l[1]) for l in lat_long_type]
+    ortools = OrToolsRouter(lat_long)
+    ortools.run()
+    paths = ortools.get_routed_data()
+    return_latlong = []
+    print("########PATHS@#########")
+    print(paths)
+    for path in paths:
+        for latlong in path:
+            return_latlong.append([latlong[0], latlong[1], "Node"])
+    print("########FORMATTED@#########")
+    print(return_latlong)
+    return return_latlong
 
 def upload_file(request):
     # Default
@@ -135,7 +149,7 @@ def upload_file(request):
             print(latlong)
             if (data.get('subType') == 'Submit (OrTools)'):
                 # JORDI
-                pass
+                latlong = ortools_calculate(latlong)
             else:
                 [latlong, costList] = main(latlong)
             form.errors.clear()
