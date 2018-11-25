@@ -3,7 +3,8 @@ from django.shortcuts import render
 from .forms import UploadFileForm
 from io import TextIOWrapper
 import csv
-#from .ortools_method import OrToolsRouter
+
+from .ortools_method import OrToolsRouter
 from math import *
 
 def haversine_distance(assetA, assetB):
