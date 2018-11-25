@@ -132,11 +132,16 @@ def upload_file(request):
         if not form.is_valid():
             title = data.get('title')
             latlong = handle_uploaded_file(request.FILES['file'])
+            print(latlong)
+            if (data.get('subType') == 'Submit (OrTools)'):
+                # JORDI
+                pass
+            else:
+                [latlong, costList] = main(latlong)
             form.errors.clear()
-            [latlong, costList] = main(latlong)
             return render(request, 
-                          'MC/playfile.html', 
-                          {'form': form, 'latlong': latlong})
+                            'MC/playfile.html', 
+                            {'form': form, 'latlong': latlong})
     else:
         form = UploadFileForm()
     return render(request, 
